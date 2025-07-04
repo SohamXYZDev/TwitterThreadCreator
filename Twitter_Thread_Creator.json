@@ -1,0 +1,1637 @@
+{
+  "name": "Twitter Thread Creator",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "2dca4af2-5298-4f30-8be0-8f1630a88c04",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -900,
+        -80
+      ],
+      "id": "62440c10-db00-400c-b92b-228e12ef9679",
+      "name": "Webhook",
+      "webhookId": "2dca4af2-5298-4f30-8be0-8f1630a88c04"
+    },
+    {
+      "parameters": {
+        "resource": "video",
+        "operation": "get",
+        "videoId": "={{ $json.id }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.youTube",
+      "typeVersion": 1,
+      "position": [
+        80,
+        -260
+      ],
+      "id": "8076575a-4118-4cd6-b4a1-19df5e175921",
+      "name": "YouTube",
+      "credentials": {
+        "youTubeOAuth2Api": {
+          "id": "qKAsLi05wv8Rtsjs",
+          "name": "YouTube account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "a13db9b0-b59a-4109-be31-663dd1362f3d",
+              "leftValue": "={{ $json.body.transcript }}",
+              "rightValue": "youtube.com",
+              "operator": {
+                "type": "string",
+                "operation": "exists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -400,
+        -80
+      ],
+      "id": "cb0182ff-300e-43e0-8545-fc18a993acfe",
+      "name": "Transcript recieved?"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "b51a5ec6-7190-4eb4-a6d2-cfc13528ad0e",
+              "name": "id",
+              "value": "={{ $json.body.id }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -120,
+        -260
+      ],
+      "id": "cc2aa54d-d89c-46a5-bec8-d32f8bc44441",
+      "name": "set video ID"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "751a55cf-3e46-4b1e-a139-6578f04ccaea",
+              "name": "url",
+              "value": "={{ $json.body.url }}",
+              "type": "string"
+            },
+            {
+              "id": "9c02b14f-f1c3-454b-8238-6d0aa83841bf",
+              "name": "title",
+              "value": "={{ $('Webhook').item.json.body.title }}",
+              "type": "string"
+            },
+            {
+              "id": "25703eb2-ed45-4768-9f69-2aed99769961",
+              "name": "text",
+              "value": "={{ $('Webhook').item.json.body.tex }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -140,
+        100
+      ],
+      "id": "296f93e6-6828-4571-ab6a-ac440eb01c71",
+      "name": "Set Article URL"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "97149ce1-9dad-4927-a9b6-cf68f8d8b1a5",
+              "name": "thumbnail",
+              "value": "={{ $json.snippet.thumbnails.maxres.url }}",
+              "type": "string"
+            },
+            {
+              "id": "3ed24c7e-ebd8-4393-a60b-be15ec030028",
+              "name": "transcript",
+              "value": "={{ $('Webhook').item.json.body.transcript }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        300,
+        -260
+      ],
+      "id": "70158457-c8c1-4cfb-8b13-d7d79ccc50ce",
+      "name": "Set Details"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Extract key information from the provided YouTube video transcript and format it into a Twitter Thread. (One main tweet and then replies)\n\nTITLE: {{ $('YouTube').item.json.snippet.title }}\nCHANNEL: {{ $('YouTube').item.json.snippet.channelTitle }}\nTRANSCRIPT: \"{{ $json.transcript }}\"\n\nOutput as many tweets as required",
+        "hasOutputParser": true,
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.7,
+      "position": [
+        660,
+        -260
+      ],
+      "id": "6399f6d3-2e7f-4d07-b6a5-2bb50e3bf69c",
+      "name": "Basic LLM Chain"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemma-3-12b-it",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        680,
+        -160
+      ],
+      "id": "97a6d3e7-27f8-493a-bc8f-7f9e0e32a7f6",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "PiqgjcwBqDAAkyrr",
+          "name": "Google Gemini(PaLM) Api account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n\t\"main_tweet\": \"👉 This is the real reason behind why X did Y last year\",\n\t\"children_tweets\": [\"1. He was already convicted of Z, and:\" , \"2. A was pressing B to help him in C, further:\", \"3. The general audience hardly symphathized with X\"]\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.2,
+      "position": [
+        820,
+        -160
+      ],
+      "id": "060a206c-8cc2-4433-afd7-30804130a90b",
+      "name": "Structured Output Parser"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "55d14a4c-ead0-437a-80a7-e0b38f5a3b71",
+              "name": "children_tweets",
+              "value": "={{ $('Basic LLM Chain').item.json.output.children_tweets }}",
+              "type": "array"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2720,
+        -260
+      ],
+      "id": "c735df2f-096a-42f3-b00d-c0a9f3c255d1",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "text": "={{ $('Basic LLM Chain').item.json.output.main_tweet }}",
+        "additionalFields": {
+          "attachments": "={{ $json.media_id_string }}"
+        }
+      },
+      "type": "n8n-nodes-base.twitter",
+      "typeVersion": 2,
+      "position": [
+        1680,
+        -260
+      ],
+      "id": "99363b0d-65eb-4c88-ab85-5d1377cda59b",
+      "name": "Create Main Tweet",
+      "credentials": {
+        "twitterOAuth2Api": {
+          "id": "lUJKFG8xjo7dcTw6",
+          "name": "X account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        3140,
+        -280
+      ],
+      "id": "8d9ec04c-c9e5-48f1-8b89-c47e13dd2f75",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "children_tweets",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        2840,
+        -260
+      ],
+      "id": "62e13308-23fa-424b-9e81-76b7266ea234",
+      "name": "Split Out"
+    },
+    {
+      "parameters": {
+        "text": "={{ $('Loop Over Items').item.json.children_tweets }}",
+        "additionalFields": {
+          "inReplyToStatusId": {
+            "__rl": true,
+            "value": "={{ $json.content.replace(/\\D/g,'') }}",
+            "mode": "id"
+          }
+        }
+      },
+      "type": "n8n-nodes-base.twitter",
+      "typeVersion": 2,
+      "position": [
+        3620,
+        -280
+      ],
+      "id": "3b2e0407-552c-46f3-82b7-9231c533fb68",
+      "name": "Reply",
+      "retryOnFail": true,
+      "waitBetweenTries": 5000,
+      "credentials": {
+        "twitterOAuth2Api": {
+          "id": "lUJKFG8xjo7dcTw6",
+          "name": "X account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentURL": "13YSnZGlE2mc3Japr8PNP-mz0ie_kq_0Va34m5KPYAvw",
+        "actionsUi": {
+          "actionFields": [
+            {
+              "action": "insert",
+              "text": "={{ $('Create Main Tweet').item.json.id }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.googleDocs",
+      "typeVersion": 2,
+      "position": [
+        2460,
+        -260
+      ],
+      "id": "8c6a8d54-00ed-4ef5-923d-ab6aa533fae3",
+      "name": "Set Main Tweet ID",
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "rJeDw1epy6BpcrpL",
+          "name": "Google Docs account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://docs.googleapis.com/v1/documents/13YSnZGlE2mc3Japr8PNP-mz0ie_kq_0Va34m5KPYAvw:batchUpdate",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "googleDocsOAuth2Api",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"requests\": [\n    {\n      \"deleteContentRange\": {\n        \"range\": {\n          \"startIndex\": 1,\n          \"endIndex\": {{$json.body.content[1].paragraph.elements[0].endIndex - 1}}\n        }\n      }\n    }\n  ]\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2300,
+        -260
+      ],
+      "id": "87a2b8b8-c629-4792-b23d-3f767afc2aa9",
+      "name": "Clear Doc",
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "rJeDw1epy6BpcrpL",
+          "name": "Google Docs account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "https://docs.googleapis.com/v1/documents/13YSnZGlE2mc3Japr8PNP-mz0ie_kq_0Va34m5KPYAvw",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "googleDocsOAuth2Api",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2140,
+        -260
+      ],
+      "id": "da5e0499-9a68-400b-805e-46845853a62e",
+      "name": "Get Doc Length",
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "rJeDw1epy6BpcrpL",
+          "name": "Google Docs account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://docs.googleapis.com/v1/documents/13YSnZGlE2mc3Japr8PNP-mz0ie_kq_0Va34m5KPYAvw:batchUpdate",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "googleDocsOAuth2Api",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"requests\": [\n    {\n      \"deleteContentRange\": {\n        \"range\": {\n          \"startIndex\": 1,\n          \"endIndex\": {{$json.body.content[1].paragraph.elements[0].endIndex - 1}}\n        }\n      }\n    }\n  ]\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        4080,
+        -280
+      ],
+      "id": "06c38de9-c5fb-484e-abca-94d3bc7e3353",
+      "name": "Clear Doc1",
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "rJeDw1epy6BpcrpL",
+          "name": "Google Docs account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "https://docs.googleapis.com/v1/documents/13YSnZGlE2mc3Japr8PNP-mz0ie_kq_0Va34m5KPYAvw",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "googleDocsOAuth2Api",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        3980,
+        -280
+      ],
+      "id": "9f01b859-e61a-4eb3-919e-ab65e569529b",
+      "name": "Get Doc Length1",
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "rJeDw1epy6BpcrpL",
+          "name": "Google Docs account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentURL": "13YSnZGlE2mc3Japr8PNP-mz0ie_kq_0Va34m5KPYAvw",
+        "actionsUi": {
+          "actionFields": [
+            {
+              "action": "insert",
+              "text": "={{ $('Reply').item.json.id }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.googleDocs",
+      "typeVersion": 2,
+      "position": [
+        4260,
+        -240
+      ],
+      "id": "98faeadd-7b86-4a9a-9133-ee30ce7be9d8",
+      "name": "Set New ID",
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "rJeDw1epy6BpcrpL",
+          "name": "Google Docs account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "documentURL": "13YSnZGlE2mc3Japr8PNP-mz0ie_kq_0Va34m5KPYAvw"
+      },
+      "type": "n8n-nodes-base.googleDocs",
+      "typeVersion": 2,
+      "position": [
+        3380,
+        -280
+      ],
+      "id": "b8a56b22-383c-49ca-ac9c-2908c885879e",
+      "name": "Get New Reply ID",
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "rJeDw1epy6BpcrpL",
+          "name": "Google Docs account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "amount": 1,
+        "unit": "minutes"
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        1820,
+        -260
+      ],
+      "id": "f6972869-0491-4935-a657-272620990520",
+      "name": "Wait",
+      "webhookId": "1c5e87f9-cb8b-4ea8-842f-33de8c2de4ff"
+    },
+    {
+      "parameters": {
+        "url": "={{ $('YouTube').item.json.snippet.thumbnails.maxres.url }}",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "file"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1180,
+        -260
+      ],
+      "id": "9853577f-a15b-4b11-9415-6897cea433ab",
+      "name": "Download Thumbnail"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://upload.twitter.com/1.1/media/upload.json",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "twitterOAuth1Api",
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "parameterType": "formBinaryData",
+              "name": "media",
+              "inputDataFieldName": "data"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1360,
+        -260
+      ],
+      "id": "a39d649e-deae-4983-afd2-99e6860442ad",
+      "name": "Upload Image to Twitter",
+      "credentials": {
+        "twitterOAuth1Api": {
+          "id": "UWB9mYA8UsAmp4jJ",
+          "name": "X OAuth account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "amount": 30
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        3720,
+        -280
+      ],
+      "id": "d8bb400c-bdfe-4572-9946-3f68eb69de1e",
+      "name": "Wait1",
+      "webhookId": "c8525ac3-fba3-4a2b-a671-2bda899bb947"
+    },
+    {
+      "parameters": {
+        "content": "# Receive Data\n\nWebhook: via python file\nManual Trigger: quick testing",
+        "height": 680,
+        "width": 620
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -1140,
+        -360
+      ],
+      "id": "f3e98c93-ac9f-4351-a9d4-ada4faf24b3e",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "## Check if given link is a YouTube Video",
+        "height": 680,
+        "width": 280,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -500,
+        -360
+      ],
+      "id": "2263a123-7106-48dc-a8ce-bf6455171b03",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "## Set YouTube Data",
+        "height": 340,
+        "width": 700
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -200,
+        -360
+      ],
+      "id": "a4043f26-c8ba-4f0f-b17b-897d98d8c7de",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "content": "## Extract Key Information",
+        "height": 340,
+        "width": 560,
+        "color": 2
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        520,
+        -360
+      ],
+      "id": "30b13507-1d95-4273-97e8-d907f4c01623",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "content": "## Get Thumbnail Media ID",
+        "height": 340,
+        "width": 440
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1100,
+        -360
+      ],
+      "id": "771ec134-110a-46e8-9f11-484d4bf13ac7",
+      "name": "Sticky Note4"
+    },
+    {
+      "parameters": {
+        "content": "## Make Main Tweet",
+        "height": 340,
+        "width": 480,
+        "color": 2
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1560,
+        -360
+      ],
+      "id": "0ebba8d4-075e-434a-a3ca-91f995aefb4d",
+      "name": "Sticky Note5"
+    },
+    {
+      "parameters": {
+        "content": "## Save ID of Tweet",
+        "height": 340,
+        "width": 580
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        2060,
+        -360
+      ],
+      "id": "393b1f3b-13fe-4ecb-9bf9-fc6d9bdcad97",
+      "name": "Sticky Note6"
+    },
+    {
+      "parameters": {
+        "content": "## Fetch Children Tweets",
+        "height": 340,
+        "width": 320,
+        "color": 2
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        2660,
+        -360
+      ],
+      "id": "d0419f0e-c946-46c5-aa35-80dadd273da1",
+      "name": "Sticky Note7"
+    },
+    {
+      "parameters": {
+        "content": "## Loop Logic for Thread Replies",
+        "height": 340,
+        "width": 1460,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        3000,
+        -360
+      ],
+      "id": "c25d4ad8-7ef9-4df6-a5a3-142aa69c4c05",
+      "name": "Sticky Note8"
+    },
+    {
+      "parameters": {
+        "content": "## Set Article Data",
+        "height": 320,
+        "width": 700
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -200,
+        0
+      ],
+      "id": "1da117f2-4102-4c74-b1e0-eaadf42741dc",
+      "name": "Sticky Note9"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Extract key information from the provided Article Data and format it into a Twitter Thread. (One main tweet and then replies)\n\nTITLE: {{ $json.title }}\nURL: {{ $json.url }}\nTEXT: \"{{ $json.text }}\"\n\nOutput as many tweets as required",
+        "hasOutputParser": true,
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.7,
+      "position": [
+        660,
+        100
+      ],
+      "id": "a3f00e52-2339-4f92-a3b5-dfb0e948ccab",
+      "name": "Basic LLM Chain1"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemma-3-12b-it",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        660,
+        180
+      ],
+      "id": "c3a0f079-28d8-4416-a2d6-f84e023907ee",
+      "name": "Google Gemini Chat Model1",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "PiqgjcwBqDAAkyrr",
+          "name": "Google Gemini(PaLM) Api account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n\t\"main_tweet\": \"👉 This is the real reason behind why X did Y last year\",\n\t\"children_tweets\": [\"1. He was already convicted of Z, and:\" , \"2. A was pressing B to help him in C, further:\", \"3. The general audience hardly symphathized with X\"]\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.2,
+      "position": [
+        840,
+        180
+      ],
+      "id": "8e64cede-46b8-4d2c-8c97-45b7260237b3",
+      "name": "Structured Output Parser1"
+    },
+    {
+      "parameters": {
+        "content": "## Extract Key Information",
+        "height": 320,
+        "width": 560,
+        "color": 2
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        520,
+        0
+      ],
+      "id": "1de4cee6-896d-4dfd-b523-e09f6038287d",
+      "name": "Sticky Note10"
+    },
+    {
+      "parameters": {
+        "text": "={{ $('Basic LLM Chain1').item.json.output.main_tweet }}",
+        "additionalFields": {
+          "attachments": "={{ $json.media_id_string }}"
+        }
+      },
+      "type": "n8n-nodes-base.twitter",
+      "typeVersion": 2,
+      "position": [
+        1680,
+        100
+      ],
+      "id": "22b24763-17c8-4894-b86b-4ab635f88717",
+      "name": "Create Main Tweet1",
+      "credentials": {
+        "twitterOAuth2Api": {
+          "id": "lUJKFG8xjo7dcTw6",
+          "name": "X account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "amount": 1,
+        "unit": "minutes"
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        1820,
+        100
+      ],
+      "id": "f8ba13c7-5346-4cec-b21c-79e8bb8b9476",
+      "name": "Wait2",
+      "webhookId": "1c5e87f9-cb8b-4ea8-842f-33de8c2de4ff"
+    },
+    {
+      "parameters": {
+        "content": "## Make Main Tweet",
+        "height": 300,
+        "width": 480,
+        "color": 2
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1560,
+        0
+      ],
+      "id": "b705841c-a560-4ae8-ae70-609164235065",
+      "name": "Sticky Note11"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "55d14a4c-ead0-437a-80a7-e0b38f5a3b71",
+              "name": "children_tweets",
+              "value": "={{ $('Basic LLM Chain1').item.json.output.children_tweets }}",
+              "type": "array"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2720,
+        100
+      ],
+      "id": "26604044-b484-40fc-9507-22288a8a186d",
+      "name": "Edit Fields2"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        3140,
+        80
+      ],
+      "id": "cb9a0050-e6a4-4bee-9727-6fc0c9fb11a9",
+      "name": "Loop Over Items1"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "children_tweets",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        2840,
+        100
+      ],
+      "id": "e0810314-8cd3-4447-b83e-607bd3d33b93",
+      "name": "Split Out1"
+    },
+    {
+      "parameters": {
+        "text": "={{ $('Loop Over Items1').item.json.children_tweets }}",
+        "additionalFields": {
+          "inReplyToStatusId": {
+            "__rl": true,
+            "value": "={{ $json.content.replace(/\\D/g,'') }}",
+            "mode": "id"
+          }
+        }
+      },
+      "type": "n8n-nodes-base.twitter",
+      "typeVersion": 2,
+      "position": [
+        3620,
+        80
+      ],
+      "id": "0eaf60d8-4f7d-46d5-a05e-78ba754fbbcf",
+      "name": "Reply1",
+      "retryOnFail": true,
+      "waitBetweenTries": 5000,
+      "credentials": {
+        "twitterOAuth2Api": {
+          "id": "lUJKFG8xjo7dcTw6",
+          "name": "X account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentURL": "13YSnZGlE2mc3Japr8PNP-mz0ie_kq_0Va34m5KPYAvw",
+        "actionsUi": {
+          "actionFields": [
+            {
+              "action": "insert",
+              "text": "={{ $('Create Main Tweet').item.json.id }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.googleDocs",
+      "typeVersion": 2,
+      "position": [
+        2460,
+        100
+      ],
+      "id": "f93db678-c5be-4b1b-b9da-a98ae67b12a8",
+      "name": "Set Main Tweet ID1",
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "rJeDw1epy6BpcrpL",
+          "name": "Google Docs account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://docs.googleapis.com/v1/documents/13YSnZGlE2mc3Japr8PNP-mz0ie_kq_0Va34m5KPYAvw:batchUpdate",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "googleDocsOAuth2Api",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"requests\": [\n    {\n      \"deleteContentRange\": {\n        \"range\": {\n          \"startIndex\": 1,\n          \"endIndex\": {{$json.body.content[1].paragraph.elements[0].endIndex - 1}}\n        }\n      }\n    }\n  ]\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2300,
+        100
+      ],
+      "id": "bf7dcc86-123c-4e8c-ab0c-3c7c5a5feb87",
+      "name": "Clear Doc2",
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "rJeDw1epy6BpcrpL",
+          "name": "Google Docs account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "https://docs.googleapis.com/v1/documents/13YSnZGlE2mc3Japr8PNP-mz0ie_kq_0Va34m5KPYAvw",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "googleDocsOAuth2Api",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2140,
+        100
+      ],
+      "id": "9ad01afd-138d-451c-bc2d-2166486c4850",
+      "name": "Get Doc Length2",
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "rJeDw1epy6BpcrpL",
+          "name": "Google Docs account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://docs.googleapis.com/v1/documents/13YSnZGlE2mc3Japr8PNP-mz0ie_kq_0Va34m5KPYAvw:batchUpdate",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "googleDocsOAuth2Api",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"requests\": [\n    {\n      \"deleteContentRange\": {\n        \"range\": {\n          \"startIndex\": 1,\n          \"endIndex\": {{$json.body.content[1].paragraph.elements[0].endIndex - 1}}\n        }\n      }\n    }\n  ]\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        4080,
+        60
+      ],
+      "id": "b0ee4233-4e46-4c83-be56-3a1c57f106da",
+      "name": "Clear Doc3",
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "rJeDw1epy6BpcrpL",
+          "name": "Google Docs account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "https://docs.googleapis.com/v1/documents/13YSnZGlE2mc3Japr8PNP-mz0ie_kq_0Va34m5KPYAvw",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "googleDocsOAuth2Api",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        3980,
+        60
+      ],
+      "id": "0d4fc38a-9b09-4daa-8dca-292e18a83015",
+      "name": "Get Doc Length3",
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "rJeDw1epy6BpcrpL",
+          "name": "Google Docs account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentURL": "13YSnZGlE2mc3Japr8PNP-mz0ie_kq_0Va34m5KPYAvw",
+        "actionsUi": {
+          "actionFields": [
+            {
+              "action": "insert",
+              "text": "={{ $('Reply1').item.json.id }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.googleDocs",
+      "typeVersion": 2,
+      "position": [
+        4260,
+        60
+      ],
+      "id": "111a3dd3-4284-43c4-b0e9-0e84ecf9e70d",
+      "name": "Set New ID1",
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "rJeDw1epy6BpcrpL",
+          "name": "Google Docs account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "documentURL": "13YSnZGlE2mc3Japr8PNP-mz0ie_kq_0Va34m5KPYAvw"
+      },
+      "type": "n8n-nodes-base.googleDocs",
+      "typeVersion": 2,
+      "position": [
+        3380,
+        80
+      ],
+      "id": "67ee14c3-216d-4ea5-821a-527e1c6fb112",
+      "name": "Get New Reply ID1",
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "rJeDw1epy6BpcrpL",
+          "name": "Google Docs account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "amount": 30
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        3720,
+        80
+      ],
+      "id": "3005b77b-ae38-4229-8c51-896256ec5adb",
+      "name": "Wait3",
+      "webhookId": "c8525ac3-fba3-4a2b-a671-2bda899bb947"
+    },
+    {
+      "parameters": {
+        "content": "## Save ID of Tweet",
+        "height": 300,
+        "width": 580
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        2060,
+        0
+      ],
+      "id": "294b24a3-ee8e-4d46-8eff-9954f8da0a32",
+      "name": "Sticky Note12"
+    },
+    {
+      "parameters": {
+        "content": "## Fetch Children Tweets",
+        "height": 360,
+        "width": 320,
+        "color": 2
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        2660,
+        -60
+      ],
+      "id": "0c6f58f8-2670-4d73-95d3-037747599f20",
+      "name": "Sticky Note13"
+    },
+    {
+      "parameters": {
+        "content": "## Loop Logic for Thread Replies",
+        "height": 300,
+        "width": 1460,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        3000,
+        0
+      ],
+      "id": "11cb54bb-814a-4f0f-b2d0-8370739b876a",
+      "name": "Sticky Note14"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Transcript recieved?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "YouTube": {
+      "main": [
+        [
+          {
+            "node": "Set Details",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Transcript recieved?": {
+      "main": [
+        [
+          {
+            "node": "set video ID",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Set Article URL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "set video ID": {
+      "main": [
+        [
+          {
+            "node": "YouTube",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Details": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain": {
+      "main": [
+        [
+          {
+            "node": "Download Thumbnail",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Main Tweet": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Get New Reply ID",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Reply": {
+      "main": [
+        [
+          {
+            "node": "Wait1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Main Tweet ID": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Clear Doc": {
+      "main": [
+        [
+          {
+            "node": "Set Main Tweet ID",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Doc Length": {
+      "main": [
+        [
+          {
+            "node": "Clear Doc",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Doc Length1": {
+      "main": [
+        [
+          {
+            "node": "Clear Doc1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Clear Doc1": {
+      "main": [
+        [
+          {
+            "node": "Set New ID",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set New ID": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get New Reply ID": {
+      "main": [
+        [
+          {
+            "node": "Reply",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Get Doc Length",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download Thumbnail": {
+      "main": [
+        [
+          {
+            "node": "Upload Image to Twitter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upload Image to Twitter": {
+      "main": [
+        [
+          {
+            "node": "Create Main Tweet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait1": {
+      "main": [
+        [
+          {
+            "node": "Get Doc Length1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Article URL": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser1": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Basic LLM Chain1",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Main Tweet1": {
+      "main": [
+        [
+          {
+            "node": "Wait2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain1": {
+      "main": [
+        [
+          {
+            "node": "Create Main Tweet1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields2": {
+      "main": [
+        [
+          {
+            "node": "Split Out1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items1": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Get New Reply ID1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out1": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Reply1": {
+      "main": [
+        [
+          {
+            "node": "Wait3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Main Tweet ID1": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Clear Doc2": {
+      "main": [
+        [
+          {
+            "node": "Set Main Tweet ID1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Doc Length2": {
+      "main": [
+        [
+          {
+            "node": "Clear Doc2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Clear Doc3": {
+      "main": [
+        [
+          {
+            "node": "Set New ID1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Doc Length3": {
+      "main": [
+        [
+          {
+            "node": "Clear Doc3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set New ID1": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get New Reply ID1": {
+      "main": [
+        [
+          {
+            "node": "Reply1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait3": {
+      "main": [
+        [
+          {
+            "node": "Get Doc Length3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait2": {
+      "main": [
+        [
+          {
+            "node": "Get Doc Length2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "4445e31b-1343-4ced-a5cc-7e282789a2e8",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "24d2213bcc17987f97f4c076aa6d4b5cd528d088a9768f5eedeff87a8324e4a1"
+  },
+  "id": "ZwirB6EzCeGXJC9b",
+  "tags": []
+}
