@@ -34,7 +34,7 @@
       "name": "YouTube",
       "credentials": {
         "youTubeOAuth2Api": {
-          "id": "qKAsLi05wv8Rtsjs",
+          "id": "YOUR_YOUTUBE_OAUTH_ID",
           "name": "YouTube account"
         }
       }
@@ -191,7 +191,7 @@
       "name": "Google Gemini Chat Model",
       "credentials": {
         "googlePalmApi": {
-          "id": "PiqgjcwBqDAAkyrr",
+          "id": "YOUR_GEMINI_API_ID",
           "name": "Google Gemini(PaLM) Api account 3"
         }
       }
@@ -249,7 +249,7 @@
       "name": "Create Main Tweet",
       "credentials": {
         "twitterOAuth2Api": {
-          "id": "lUJKFG8xjo7dcTw6",
+          "id": "YOUR_TWITTER_OAUTH_ID",
           "name": "X account 2"
         }
       }
@@ -304,7 +304,7 @@
       "waitBetweenTries": 5000,
       "credentials": {
         "twitterOAuth2Api": {
-          "id": "lUJKFG8xjo7dcTw6",
+          "id": "YOUR_TWITTER_OAUTH_ID",
           "name": "X account 2"
         }
       }
@@ -312,7 +312,7 @@
     {
       "parameters": {
         "operation": "update",
-        "documentURL": "13YSnZGlE2mc3Japr8PNP-mz0ie_kq_0Va34m5KPYAvw",
+        "documentURL": "YOUR_GOOGLE_DOC_ID",
         "actionsUi": {
           "actionFields": [
             {
@@ -332,7 +332,7 @@
       "name": "Set Main Tweet ID",
       "credentials": {
         "googleDocsOAuth2Api": {
-          "id": "rJeDw1epy6BpcrpL",
+          "id": "YOUR_GOOGLE_DOCS_OAUTH_ID",
           "name": "Google Docs account"
         }
       }
@@ -340,7 +340,7 @@
     {
       "parameters": {
         "method": "POST",
-        "url": "https://docs.googleapis.com/v1/documents/13YSnZGlE2mc3Japr8PNP-mz0ie_kq_0Va34m5KPYAvw:batchUpdate",
+        "url": "https://docs.googleapis.com/v1/documents/YOUR_GOOGLE_DOC_ID:batchUpdate",
         "authentication": "predefinedCredentialType",
         "nodeCredentialType": "googleDocsOAuth2Api",
         "sendBody": true,
@@ -358,14 +358,14 @@
       "name": "Clear Doc",
       "credentials": {
         "googleDocsOAuth2Api": {
-          "id": "rJeDw1epy6BpcrpL",
+          "id": "YOUR_GOOGLE_DOCS_OAUTH_ID",
           "name": "Google Docs account"
         }
       }
     },
     {
       "parameters": {
-        "url": "https://docs.googleapis.com/v1/documents/13YSnZGlE2mc3Japr8PNP-mz0ie_kq_0Va34m5KPYAvw",
+        "url": "https://docs.googleapis.com/v1/documents/YOUR_GOOGLE_DOC_ID",
         "authentication": "predefinedCredentialType",
         "nodeCredentialType": "googleDocsOAuth2Api",
         "options": {}
@@ -380,7 +380,7 @@
       "name": "Get Doc Length",
       "credentials": {
         "googleDocsOAuth2Api": {
-          "id": "rJeDw1epy6BpcrpL",
+          "id": "YOUR_GOOGLE_DOCS_OAUTH_ID",
           "name": "Google Docs account"
         }
       }
@@ -388,7 +388,7 @@
     {
       "parameters": {
         "method": "POST",
-        "url": "https://docs.googleapis.com/v1/documents/13YSnZGlE2mc3Japr8PNP-mz0ie_kq_0Va34m5KPYAvw:batchUpdate",
+        "url": "https://docs.googleapis.com/v1/documents/YOUR_GOOGLE_DOC_ID:batchUpdate",
         "authentication": "predefinedCredentialType",
         "nodeCredentialType": "googleDocsOAuth2Api",
         "sendBody": true,
@@ -406,14 +406,14 @@
       "name": "Clear Doc1",
       "credentials": {
         "googleDocsOAuth2Api": {
-          "id": "rJeDw1epy6BpcrpL",
+          "id": "YOUR_GOOGLE_DOCS_OAUTH_ID",
           "name": "Google Docs account"
         }
       }
     },
     {
       "parameters": {
-        "url": "https://docs.googleapis.com/v1/documents/13YSnZGlE2mc3Japr8PNP-mz0ie_kq_0Va34m5KPYAvw",
+        "url": "https://docs.googleapis.com/v1/documents/YOUR_GOOGLE_DOC_ID",
         "authentication": "predefinedCredentialType",
         "nodeCredentialType": "googleDocsOAuth2Api",
         "options": {}
@@ -428,7 +428,7 @@
       "name": "Get Doc Length1",
       "credentials": {
         "googleDocsOAuth2Api": {
-          "id": "rJeDw1epy6BpcrpL",
+          "id": "YOUR_GOOGLE_DOCS_OAUTH_ID",
           "name": "Google Docs account"
         }
       }
@@ -436,7 +436,7 @@
     {
       "parameters": {
         "operation": "update",
-        "documentURL": "13YSnZGlE2mc3Japr8PNP-mz0ie_kq_0Va34m5KPYAvw",
+        "documentURL": "YOUR_GOOGLE_DOC_ID",
         "actionsUi": {
           "actionFields": [
             {
@@ -456,7 +456,7 @@
       "name": "Set New ID",
       "credentials": {
         "googleDocsOAuth2Api": {
-          "id": "rJeDw1epy6BpcrpL",
+          "id": "YOUR_GOOGLE_DOCS_OAUTH_ID",
           "name": "Google Docs account"
         }
       }
@@ -464,7 +464,7 @@
     {
       "parameters": {
         "operation": "get",
-        "documentURL": "13YSnZGlE2mc3Japr8PNP-mz0ie_kq_0Va34m5KPYAvw"
+        "documentURL": "YOUR_GOOGLE_DOC_ID"
       },
       "type": "n8n-nodes-base.googleDocs",
       "typeVersion": 2,
@@ -476,7 +476,7 @@
       "name": "Get New Reply ID",
       "credentials": {
         "googleDocsOAuth2Api": {
-          "id": "rJeDw1epy6BpcrpL",
+          "id": "YOUR_GOOGLE_DOCS_OAUTH_ID",
           "name": "Google Docs account"
         }
       }
@@ -750,7 +750,7 @@
       "name": "Google Gemini Chat Model1",
       "credentials": {
         "googlePalmApi": {
-          "id": "PiqgjcwBqDAAkyrr",
+          "id": "YOUR_GEMINI_API_ID",
           "name": "Google Gemini(PaLM) Api account 3"
         }
       }
@@ -801,7 +801,7 @@
       "name": "Create Main Tweet1",
       "credentials": {
         "twitterOAuth2Api": {
-          "id": "lUJKFG8xjo7dcTw6",
+          "id": "YOUR_TWITTER_OAUTH_ID",
           "name": "X account 2"
         }
       }
@@ -910,7 +910,7 @@
       "waitBetweenTries": 5000,
       "credentials": {
         "twitterOAuth2Api": {
-          "id": "lUJKFG8xjo7dcTw6",
+          "id": "YOUR_TWITTER_OAUTH_ID",
           "name": "X account 2"
         }
       }
@@ -918,7 +918,7 @@
     {
       "parameters": {
         "operation": "update",
-        "documentURL": "13YSnZGlE2mc3Japr8PNP-mz0ie_kq_0Va34m5KPYAvw",
+        "documentURL": "YOUR_GOOGLE_DOC_ID",
         "actionsUi": {
           "actionFields": [
             {
@@ -938,7 +938,7 @@
       "name": "Set Main Tweet ID1",
       "credentials": {
         "googleDocsOAuth2Api": {
-          "id": "rJeDw1epy6BpcrpL",
+          "id": "YOUR_GOOGLE_DOCS_OAUTH_ID",
           "name": "Google Docs account"
         }
       }
@@ -946,7 +946,7 @@
     {
       "parameters": {
         "method": "POST",
-        "url": "https://docs.googleapis.com/v1/documents/13YSnZGlE2mc3Japr8PNP-mz0ie_kq_0Va34m5KPYAvw:batchUpdate",
+        "url": "https://docs.googleapis.com/v1/documents/YOUR_GOOGLE_DOC_ID:batchUpdate",
         "authentication": "predefinedCredentialType",
         "nodeCredentialType": "googleDocsOAuth2Api",
         "sendBody": true,
@@ -964,14 +964,14 @@
       "name": "Clear Doc2",
       "credentials": {
         "googleDocsOAuth2Api": {
-          "id": "rJeDw1epy6BpcrpL",
+          "id": "YOUR_GOOGLE_DOCS_OAUTH_ID",
           "name": "Google Docs account"
         }
       }
     },
     {
       "parameters": {
-        "url": "https://docs.googleapis.com/v1/documents/13YSnZGlE2mc3Japr8PNP-mz0ie_kq_0Va34m5KPYAvw",
+        "url": "https://docs.googleapis.com/v1/documents/YOUR_GOOGLE_DOC_ID",
         "authentication": "predefinedCredentialType",
         "nodeCredentialType": "googleDocsOAuth2Api",
         "options": {}
@@ -986,7 +986,7 @@
       "name": "Get Doc Length2",
       "credentials": {
         "googleDocsOAuth2Api": {
-          "id": "rJeDw1epy6BpcrpL",
+          "id": "YOUR_GOOGLE_DOCS_OAUTH_ID",
           "name": "Google Docs account"
         }
       }
@@ -994,7 +994,7 @@
     {
       "parameters": {
         "method": "POST",
-        "url": "https://docs.googleapis.com/v1/documents/13YSnZGlE2mc3Japr8PNP-mz0ie_kq_0Va34m5KPYAvw:batchUpdate",
+        "url": "https://docs.googleapis.com/v1/documents/YOUR_GOOGLE_DOC_ID:batchUpdate",
         "authentication": "predefinedCredentialType",
         "nodeCredentialType": "googleDocsOAuth2Api",
         "sendBody": true,
@@ -1012,14 +1012,14 @@
       "name": "Clear Doc3",
       "credentials": {
         "googleDocsOAuth2Api": {
-          "id": "rJeDw1epy6BpcrpL",
+          "id": "YOUR_GOOGLE_DOCS_OAUTH_ID",
           "name": "Google Docs account"
         }
       }
     },
     {
       "parameters": {
-        "url": "https://docs.googleapis.com/v1/documents/13YSnZGlE2mc3Japr8PNP-mz0ie_kq_0Va34m5KPYAvw",
+        "url": "https://docs.googleapis.com/v1/documents/YOUR_GOOGLE_DOC_ID",
         "authentication": "predefinedCredentialType",
         "nodeCredentialType": "googleDocsOAuth2Api",
         "options": {}
@@ -1034,7 +1034,7 @@
       "name": "Get Doc Length3",
       "credentials": {
         "googleDocsOAuth2Api": {
-          "id": "rJeDw1epy6BpcrpL",
+          "id": "YOUR_GOOGLE_DOCS_OAUTH_ID",
           "name": "Google Docs account"
         }
       }
@@ -1042,7 +1042,7 @@
     {
       "parameters": {
         "operation": "update",
-        "documentURL": "13YSnZGlE2mc3Japr8PNP-mz0ie_kq_0Va34m5KPYAvw",
+        "documentURL": "YOUR_GOOGLE_DOC_ID",
         "actionsUi": {
           "actionFields": [
             {
@@ -1062,7 +1062,7 @@
       "name": "Set New ID1",
       "credentials": {
         "googleDocsOAuth2Api": {
-          "id": "rJeDw1epy6BpcrpL",
+          "id": "YOUR_GOOGLE_DOCS_OAUTH_ID",
           "name": "Google Docs account"
         }
       }
@@ -1070,7 +1070,7 @@
     {
       "parameters": {
         "operation": "get",
-        "documentURL": "13YSnZGlE2mc3Japr8PNP-mz0ie_kq_0Va34m5KPYAvw"
+        "documentURL": "YOUR_GOOGLE_DOC_ID"
       },
       "type": "n8n-nodes-base.googleDocs",
       "typeVersion": 2,
@@ -1082,7 +1082,7 @@
       "name": "Get New Reply ID1",
       "credentials": {
         "googleDocsOAuth2Api": {
-          "id": "rJeDw1epy6BpcrpL",
+          "id": "YOUR_GOOGLE_DOCS_OAUTH_ID",
           "name": "Google Docs account"
         }
       }

@@ -1,10 +1,16 @@
-url = "https://www.youtube.com/watch?v=NjOYN9_kFcM"
-webhook_url = "http://localhost:5678/webhook-test/2dca4af2-5298-4f30-8be0-8f1630a88c04"
-
+import os
+from dotenv import load_dotenv
 from youtube_transcript_api import YouTubeTranscriptApi
 from newspaper import Article
 import json
 import requests
+
+# Load environment variables from .env file
+load_dotenv()
+
+# Get configuration from environment variables
+url = os.getenv('CONTENT_URL', 'https://www.youtube.com/watch?v=EXAMPLE_VIDEO_ID')
+webhook_url = os.getenv('DEFAULT_WEBHOOK_URL', 'http://localhost:5678/webhook-test/YOUR_WEBHOOK_ID')
 
 # Check if it's a YouTube URL
 is_youtube = "youtu.be" in url or "youtube.com" in url
@@ -53,7 +59,7 @@ else:
         }
         
         # Send to webhook
-        webhook_url = "https://n8n.sohamxyz.com/webhook/2dca4af2-5298-4f30-8be0-8f1630a88c04"
+        webhook_url = os.getenv('WEBHOOK_URL_REMOTE', os.getenv('DEFAULT_WEBHOOK_URL', 'http://localhost:5678/webhook-test/YOUR_WEBHOOK_ID'))
         response = requests.post(webhook_url, json=data)
         
         if response.status_code == 200:
